@@ -1,4 +1,4 @@
-package com.student;
+package com.teacher;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,17 +13,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Student_login_servlet
+ * Servlet implementation class Teacher_login_servlet
  */
-public class Student_login_servlet extends HttpServlet {
+public class Teacher_login_servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Student_login_servlet() {
+    public Teacher_login_servlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,7 +35,12 @@ public class Student_login_servlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		html(request,response);
+		try {
+			display(request,response);
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -63,7 +69,8 @@ public class Student_login_servlet extends HttpServlet {
 		Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/ewa_project","root","0721");
         
-        String query="select username,password from student_login where username=? and password=?";
+        
+        String query="select username,password from faculty_login where username=? and password=?";
         
         PreparedStatement pst = con.prepareStatement(query);
         pst.setString(1, username);
@@ -72,13 +79,14 @@ public class Student_login_servlet extends HttpServlet {
 		ResultSet rs = pst.executeQuery();
 		
 		if(rs.next()) {
+			HttpSession session = request.getSession();
+			  session.setAttribute("user", username);
 			out.print("<script src=\"login_correct.js\"></script>\r\n");
 			display(request,response);
 		}
 		else {
 			out.print("<script src=\"login_incorrect.js\"></script>\r\n");
-			out.print("<a href='Student_login_servlet'>LOGIN AGAIN PLS</a>");
-			
+			out.print("<a href='Teacher_login_servlet'>LOGIN AGAIN PLS</a>");
 		}
 }
 	static void display(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, SQLException, IOException {
@@ -88,67 +96,40 @@ public class Student_login_servlet extends HttpServlet {
 		
 		response.setContentType("text/html");
 		PrintWriter out=response.getWriter();
-		out.write("<h3>ACHEIVMENTS LIST</h3>");
+		//out.write("UPDATE/DELETE THE STUDENTS DETAILS<br><br>");
+
+		//out.print("<a href='index.jsp'>TAKE ME TO HOME PAGE</a><br>");
 		
-		String query="select * from main_data";
+		String query="select * from student_login";
 		PreparedStatement pst = con.prepareStatement(query);
-		
 		ResultSet rs = pst.executeQuery();
-		out.print("<table border='1' width'100'");
-        out.write("<tr><th>SNO</th><th>Id</th><th>Acheived_By</th><th>Name</th><th>Task</th><th>Achievements</th><th>Year</th><th>Update</th><th>Delete</th></tr>");
-		
-		while(rs.next()) {
-			int sno=rs.getInt("sno");
-			int idd=rs.getInt("id");
-			String id=Integer.toString(idd);
-			String Acheived_By=rs.getString("Acheived_By");
-			String Name=rs.getString("Name");
-			String Task=rs.getString("Task");
-			String Achievements=rs.getString("Achievements");
-			int year=rs.getInt("Year");
-			
-			out.print("<tr>"+
-		    		   "<td>"+sno+"</td>"
-		    		   +"<td>"+id+"</td>"
-		    		   +"<td>"+Acheived_By+"</td>"
-		    		   +"<td>"+Name+"</td>"
-		    		   +"<td>"+Task+"</td>"
-		    		   +"<td>"+Achievements+"</td>"
-		    		   +"<td>"+year+"</td>"
-		    		   +"<td><a href='/EWA_FINAL_PROJECT/Student_Update_servlet?id="+id+"'>Update</a></td>"
-		        	   +"<td><a href='/EWA_FINAL_PROJECT/Student_delete_servlet?id="+id+"'>delete</a></td>"
+
+		out.write("<!DOCTYPE html>\r\n"
+        		+ "<html>\r\n"
+        		+ "<head>\r\n"
+        		+ "<meta charset=\"ISO-8859-1\">\r\n"
+        		+ "<title>UPDATE DETAILS</title>\r\n"
+        		+ "<link rel=\"stylesheet\" href=\"table_css.css\">\r\n"
+        		+ "</head>\r\n"
+        		+ "<body>\r\n"
+        		+ "<h3 align=\"center\">UPDATE/DELETE THE STUDENTS DETAILS</h3>\r\n"
+        		+"<a class =\"links\" href='index.jsp'>HOME PAGE</a><br>"
+        		+ "<table class=\"styled-table\">\r\n"
+        		+ "<tr><th>username</th><th>password</th><th>Update</th><th>Delete</th></tr>");
+        
+        while(rs.next()) {
+        	String username=rs.getString("username");
+        	String password=rs.getString("password");
+        	out.print("<tr>"+
+		    		   "<td>"+username+"</td>"
+		    		   +"<td>"+password+"</td>"
+		    		   +"<td><a href='/EWA_FINAL_PROJECT/Teacher_Update_Servlet?id="+username+"'>Update</a></td>"
+		        	   +"<td><a href='/EWA_FINAL_PROJECT/Teacher_delete_servlet?id="+username+"'>delete</a></td>"
 		    		   +"</tr>");
-		}
-		out.print("<a href='Student_add_servlet'>ADD NEW DATA</a>");
+        }
+        
 	}
 	
-	static void html(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("text/html");
-		PrintWriter out=response.getWriter();
-		out.print("<!DOCTYPE html>\r\n"
-				+ "<html>\r\n"
-				+ "<head>\r\n"
-				+ "  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>\r\n"
-				+ "  <title>YEAR BOOK SYSTEM - LOGIN</title>\r\n"
-				+ "  <link rel=\"stylesheet\" href=\"student_login_css.css\">\r\n"
-				+ "</head>\r\n"
-				+ " \r\n"
-				+ "<body>\r\n"
-				+ "<div class=\"student_login_form\">\r\n"
-				+ "<h2>Online University Yearbook System Student Login Page</h2>\r\n"
-				+ "<form method=\"post\" action=\"Student_login_servlet\">\r\n"
-				+ "  <fieldset>\r\n"
-				+ "    username : <input type=\"text\" name=\"username\" /><br /><br />\r\n"
-				+ "    password : <input type=\"password\" name=\"password\" /><br /><br />\r\n"
-				+ "  </fieldset>\r\n"
-				+ "  <input type=\"hidden\" name=\"secret\" value=\"888\" />\r\n"
-				+ "  <a href='student_newregister_servlet'>New Register</a>\r\n"
-				+ "  <input type=\"submit\" value=\"SEND\" />\r\n"
-				+ "  <input type=\"reset\" value=\"CLEAR\" />\r\n"
-				+ "</form>\r\n"
-				+ "</div>\r\n"
-				+ "</body>\r\n"
-				+ "</html>");	}
+	}
 
 
-}

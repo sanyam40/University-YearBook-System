@@ -56,17 +56,25 @@ public class student_display_servlet extends HttpServlet {
 		
 		response.setContentType("text/html");
 		PrintWriter out=response.getWriter();
-		out.write("<h3>ACHEIVMENTS LIST</h3>");
+		//out.write("<h3>ACHEIVMENTS LIST</h3>");
 		
 		String query="select * from main_data";
 		PreparedStatement pst = con.prepareStatement(query);
 		
 		ResultSet rs = pst.executeQuery();
-		out.print("<a href='index.jsp'>TAKE ME TO HOME PAGE</a>");
-		out.print("<br>");
-		out.print("<table border='1' width'100'");
-        out.write("<tr><th>SNO</th><th>Id</th><th>Acheived_By</th><th>Name</th><th>Task</th><th>Achievements</th><th>Year</th></tr>");
-		
+        
+        out.write("<!DOCTYPE html>\r\n"
+        		+ "<html>\r\n"
+        		+ "<head>\r\n"
+        		+ "<meta charset=\"ISO-8859-1\">\r\n"
+        		+ "<title>Achievements List</title>\r\n"
+        		+ "<link rel=\"stylesheet\" href=\"table_css.css\">\r\n"
+        		+ "</head>\r\n"
+        		+ "<body>\r\n"
+        		+ "<h3 align=\"center\">ACHEIVMENTS LIST</h3>\r\n"
+        		+ "<table class=\"styled-table\">\r\n"
+        		+ "<tr><th>SNO</th><th>Id</th><th>Acheived_By</th><th>Name</th><th>Task</th><th>Achievements</th><th>Year</th></tr>");
+
 		while(rs.next()) {
 			int sno=rs.getInt("sno");
 			int id=rs.getInt("id");
@@ -86,6 +94,8 @@ public class student_display_servlet extends HttpServlet {
 		    		   +"<td>"+year+"</td>"
 		    		   +"</tr>");
 		}
+		out.print("<a class =\"links\" href='index.jsp'>HOME PAGE</a>");
+		
 	}
 
 

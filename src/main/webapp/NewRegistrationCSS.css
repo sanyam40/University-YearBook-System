@@ -1,0 +1,82 @@
+body
+{
+    margin:0;
+    padding: 0px;
+
+}
+body:before
+{
+    content: '';
+    position: fixed;
+    width: 100vw;
+    height: 100vw;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    -webkit-background-composite: cover;
+    background size: cover;
+    filter:blur(10px);
+}
+.New-Registration
+{
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform:translate(-50%, -50%) ;
+    width: 400px;
+    height: 400px;
+    background:rgba(255, 255, 255, 0.6);
+    padding:90px 40px;
+}
+
+.New-Registration h1
+{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    text-transform: uppercase;
+
+}
+.New-Registration h2
+{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.New-Registration input
+{
+    width: 100%;
+    margin-bottom: 10px; 
+}
+.New-Registration input [type = text],
+.New-Registration input [type = password]
+{
+    border: none;
+    border bottom: 1px;
+    background-color: transpaernt;
+    outline: none;
+    height: 40px;
+    font-size: 16px;
+    margin bottom: 10px;
+}
+.New-Registration [type = submit]
+{
+    height: 30px;
+    font-size: 15px;
+    background: #009879;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 25px;
+    border:none;
+    outline:none;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+.New-Registration p
+{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
